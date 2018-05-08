@@ -1,31 +1,33 @@
 {
-  "_from": "git+https://github.com/ribuluo000/IDCardRecognition.git",
-  "_id": "react-native-IDRecognition@0.0.1",
-  "_inBundle": false,
-  "_integrity": "sha1-Kx3YP7eQ/0sfmYx6CY7s7ltIk4o=",
-  "_location": "/react-native-IDRecognition",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "git",
-    "raw": "react-native-IDCardRecognition@git+https://github.com/ribuluo000/IDCardRecognition.git",
-    "name": "react-native-IDCardRecognition",
-    "escapedName": "react-native-IDCardRecognition",
+    "name": "react-native-IDRecognition",
+  "version": "1.0.1",
+  "description": "A React Native module  Android 身份证号码识别 （本地，在线，实时）。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "deprecated": false,
-  "description": "A React Native module  Android 身份证号码识别 （本地，在线，实时）",
-  "homepage": "https://github.com/ribuluo000/IDCardRecognition#readme",
   "keywords": [
+    "react-component",
     "react-native",
     "react-native-IDRecognition",
-    "react",
-    "native"
+    "android"
   ],
-  "main": "index.js",
-  "name": "react-native-IDRecognition",
-  "nativePackage": true,
+  "peerDependencies": {
+    "react-native": ">=0.5"
+  },
+  "author": "ribuluo000",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ribuluo000/IDCardRecognition.git"
   },
-  "version": "0.0.1"
+  "bugs": {
+    "url": "https://github.com/ribuluo000/react-native-IDCardRecognition/issues"
+  },
+  "homepage": "https://github.com/ribuluo000/react-native-IDCardRecognition.git",
+  "rnpm": {
+    "android": {
+      "packageInstance": "new IDRecognitionPackage()"
+    }
+  }
 }
