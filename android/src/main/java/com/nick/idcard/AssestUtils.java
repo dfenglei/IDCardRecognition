@@ -15,7 +15,7 @@ import java.io.OutputStream;
 public class AssestUtils {
 
     private Context mContext;
-    private String path = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"tessdata/";
+    private String path = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"nick"+File.separator+"tessdata/";
     public AssestUtils(Context mContext) {
         super();
         this.mContext = mContext;
@@ -24,7 +24,7 @@ public class AssestUtils {
 
         isFolderExists(path);
         try {
-                String[] list = mContext.getAssets().list("dic");
+                String[] list = mContext.getAssets().list("tessdata");
                 for (int i = 0; i < list.length; i++) {
                     assetsDataToSD(path+list[i],list[i]);
                 }
@@ -47,7 +47,7 @@ public class AssestUtils {
     public void assetsDataToSD(String path,String fileName) throws IOException {
         InputStream myInput;
         OutputStream myOutput = new FileOutputStream(path);
-        myInput = mContext.getAssets().open("dic/"+fileName);
+        myInput = mContext.getAssets().open("tessdata/"+fileName);
         byte[] buffer = new byte[1024];
         int length = myInput.read(buffer);
         while (length > 0) {

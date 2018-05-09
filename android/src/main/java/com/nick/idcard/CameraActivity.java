@@ -1,6 +1,7 @@
 package com.nick.idcard;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -21,7 +22,10 @@ import android.widget.Toast;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CameraActivity extends Activity implements SurfaceHolder.Callback , Camera.PreviewCallback {
 
@@ -30,11 +34,21 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
     private static final String TAG = "CameraActivity";
     private boolean hasSurface;
 
-    //训练数据路径，必须包含tesseract文件夹
-    static final String TESSBASE_PATH = Environment.getExternalStorageDirectory() + "/";
+    //训练数据路径，必须包含tessdata文件夹
+    static final String TESSBASE_PATH = Environment.getExternalStorageDirectory() + File.separator+"nick"+ File.separator;
     //识别语言英文
     static final String DEFAULT_LANGUAGE = "eng";
     private ImageView iv_result;
+    private Intent intent;
+    private String requestCode;
+    public static final int REQUEST_ID_FRONT = 15001;
+    public static final int REQUEST_ID_BACK = 15002;
+
+    private String regExIDCardFront = "(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$)";
+    private Pattern patternIDCardFront = Pattern.compile(regExIDCardFront);
+    private String regExIDCardBack = "([0-9]{4}).([0-9]{2}).([0-9]{2})-([0-9]{4}).([0-9]{2}).([0-9]{2})";
+    private Pattern patternIDCardBack = Pattern.compile(regExIDCardBack);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +60,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
         }
 
         setContentView(R.layout.activity_camera);
+        intent = getIntent();
+        requestCode = intent.getStringExtra("requestCode");
         try {
             initView();
         } catch (IOException e) {
@@ -153,10 +169,39 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
            // iv_result.setImageBitmap(bit_hm);
             if(bit_hm != null){
                 String localre = localre(bit_hm);
-                if (localre.length() == 18) {
+                if((REQUEST_ID_FRONT+"").equals(requestCode)){
+                    Matcher matcher = patternIDCardFront.matcher(localre);
+                    boolean b = matcher.matches();
+                    if (b) {
+                        Log.e(TAG, "onPreviewFrame: "+localre );
+//                        onPreviewFrame: 130130199101053056
+                        Toast.makeText(getApplicationContext(),localre,Toast.LENGTH_SHORT).show();
+
+                        intent.putExtra("data",localre);
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                }else if((REQUEST_ID_BACK+"").equals(requestCode)){
                     Log.e(TAG, "onPreviewFrame: "+localre );
+//                    onPreviewFrame: 1 2015.02.16-2025.02.16
                     Toast.makeText(getApplicationContext(),localre,Toast.LENGTH_SHORT).show();
+
+                    String d[] = localre.split(" ");
+                    String ret = "";
+                    if(d.length>0){
+                        ret = d[d.length-1];
+                    }
+
+                    Matcher matcher = patternIDCardBack.matcher(ret);
+                    boolean b = matcher.matches();
+                    if (b) {
+
+                        intent.putExtra("data",ret);
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
                 }
+
             }
         }
     }
@@ -172,7 +217,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
         baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
         //设置要识别的图片
         baseApi.setImage(bm);
-        baseApi.setVariable("tessedit_char_whitelist", "0123456789Xx");
+        baseApi.setVariable("tessedit_char_whitelist", "0123456789Xx.-");
         Log.e(TAG, "localre: "+ baseApi.getUTF8Text());
         content = baseApi.getUTF8Text();
         baseApi.clear();
