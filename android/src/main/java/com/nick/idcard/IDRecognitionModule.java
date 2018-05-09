@@ -63,7 +63,6 @@ public class IDRecognitionModule extends ReactContextBaseJavaModule
   public static final int REQUEST_PERMISSIONS_FOR_LIBRARY = 14002;
 
   private final ReactApplicationContext reactContext;
-  private final int dialogThemeId;
 
   protected Callback callback;
   private ReadableMap options;
@@ -118,12 +117,9 @@ public class IDRecognitionModule extends ReactContextBaseJavaModule
     }
   };
 
-  public IDRecognitionModule(ReactApplicationContext reactContext,
-                           @StyleRes final int dialogThemeId)
+  public IDRecognitionModule(ReactApplicationContext reactContext)
   {
     super(reactContext);
-
-    this.dialogThemeId = dialogThemeId;
     this.reactContext = reactContext;
     this.reactContext.addActivityEventListener(this);
   }
@@ -477,7 +473,7 @@ public class IDRecognitionModule extends ReactContextBaseJavaModule
 
   public @StyleRes int getDialogThemeId()
   {
-    return this.dialogThemeId;
+    return R.style.Theme_AppCompat_DayNight_Dialog;
   }
 
   public @NonNull Activity getActivity()

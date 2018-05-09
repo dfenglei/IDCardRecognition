@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.nick.idcard.IDRecognitionModule;
-import com.nick.idcard.R;
 
 import java.lang.ref.WeakReference;
 

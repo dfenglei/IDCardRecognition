@@ -1,11 +1,12 @@
 package com.nick.idcard;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+//import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,8 +33,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+//import com.nick.idcard.R;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
 
 
     OkHttpClient mOkHttpClient;
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
         initView();
         initClient();
         new AssestUtils(this).init();
@@ -114,26 +116,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void localre(String url) {
-        Bitmap bmp = BitmapFactory.decodeFile(url);
-        final TessBaseAPI baseApi = new TessBaseAPI();
-        //初始化OCR的训练数据路径与语言
+        try {
+            Bitmap bmp = BitmapFactory.decodeFile(url);
+            final TessBaseAPI baseApi = new TessBaseAPI();
+            //初始化OCR的训练数据路径与语言
 
-        int x, y, w, h;
-        x = (int) (bmp.getWidth() * 0.340);
-        y = (int) (bmp.getHeight() * 0.800);
-        w = (int) (bmp.getWidth() * 0.6 + 0.5f);
-        h = (int) (bmp.getHeight() * 0.12 + 0.5f);
-        Bitmap bit_hm = Bitmap.createBitmap(bmp, x, y, w, h);
-        iv_number.setImageBitmap(bit_hm);
-        baseApi.init(TESSBASE_PATH, DEFAULT_LANGUAGE);
-        //设置识别模式
-        baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
-        //设置要识别的图片
-        baseApi.setImage(bit_hm);
-        baseApi.setVariable("tessedit_char_whitelist", "0123456789Xx");
-        tv_result.setText(baseApi.getUTF8Text());
-        baseApi.clear();
-        baseApi.end();
+            int x, y, w, h;
+            x = (int) (bmp.getWidth() * 0.340);
+            y = (int) (bmp.getHeight() * 0.800);
+            w = (int) (bmp.getWidth() * 0.6 + 0.5f);
+            h = (int) (bmp.getHeight() * 0.12 + 0.5f);
+            Bitmap bit_hm = Bitmap.createBitmap(bmp, x, y, w, h);
+            iv_number.setImageBitmap(bit_hm);
+            baseApi.init(TESSBASE_PATH, DEFAULT_LANGUAGE);
+            //设置识别模式
+            baseApi.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_LINE);
+            //设置要识别的图片
+            baseApi.setImage(bit_hm);
+            baseApi.setVariable("tessedit_char_whitelist", "0123456789Xx");
+            tv_result.setText(baseApi.getUTF8Text());
+            baseApi.clear();
+            baseApi.end();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -159,16 +165,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.re_net:
-                uploadAndRecognize(url);
-                break;
-            case R.id.re_local:
-                localre(url);
-                break;
-            case R.id.re_real:
-                startActivity(new Intent(getApplicationContext(),CameraActivity.class));
-                break;
+        int id = v.getId();
+        if(id == R.id.re_net){
+            uploadAndRecognize(url);
+        }else if(id == R.id.re_local){
+            localre(url);
+        }else if(id == R.id.re_real){
+            startActivity(new Intent(getApplicationContext(),CameraActivity.class));
         }
+
     }
 }

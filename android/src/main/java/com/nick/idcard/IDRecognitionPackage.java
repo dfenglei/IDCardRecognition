@@ -21,10 +21,9 @@ public class IDRecognitionPackage implements ReactPackage {
 
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    return Arrays.<NativeModule>asList(new IDRecognitionModule(reactContext, dialogThemeId));
+    return Arrays.<NativeModule>asList(new IDRecognitionModule(reactContext));
   }
 
-  @Override
   public List<Class<? extends JavaScriptModule>> createJSModules() {
     return Collections.emptyList();
   }
