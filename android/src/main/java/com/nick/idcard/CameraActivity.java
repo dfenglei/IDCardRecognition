@@ -218,7 +218,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
 
                     Log.e(TAG, "onPreviewFrame: " + localre);
 //                    onPreviewFrame: 1 2015.02.16-2025.02.16
-                    Toast.makeText(getApplicationContext(), localre, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), localre, Toast.LENGTH_SHORT).show();
 
                     String d[] = localre.split(" ");
                     String ret = "";
@@ -229,6 +229,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
                     Matcher matcher = patternIDCardBack.matcher(ret);
                     boolean b = matcher.matches();
                     if (b) {
+                        Toast.makeText(getApplicationContext(), ret, Toast.LENGTH_SHORT).show();
 
                         intent.putExtra("data", ret);
                         setResult(RESULT_OK, intent);
