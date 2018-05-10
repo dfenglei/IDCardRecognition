@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.nick.idcard.utils.ImageUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,7 +29,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CameraActivity extends Activity implements SurfaceHolder.Callback , Camera.PreviewCallback {
+public class CameraActivity extends Activity implements SurfaceHolder.Callback, Camera.PreviewCallback {
 
     private SurfaceView sfv;
     private CameraManager cameraManager;
@@ -35,7 +37,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
     private boolean hasSurface;
 
     //训练数据路径，必须包含tessdata文件夹
-    static final String TESSBASE_PATH = Environment.getExternalStorageDirectory() + File.separator+"nick"+ File.separator;
+    static final String TESSBASE_PATH = Environment.getExternalStorageDirectory() + File.separator + "nick" + File.separator;
     //识别语言英文
     static final String DEFAULT_LANGUAGE = "eng";
     private ImageView iv_result;
@@ -88,8 +90,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
         super.onDestroy();
         cameraManager.stopPreview();
         cameraManager.closeDriver();
-            SurfaceHolder surfaceHolder = sfv.getHolder();
-            surfaceHolder.removeCallback(this);
+        SurfaceHolder surfaceHolder = sfv.getHolder();
+        surfaceHolder.removeCallback(this);
 
     }
 
@@ -133,6 +135,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(1, 1);// 缩放比例
+
         camera.addCallbackBuffer(data);
         ByteArrayOutputStream baos;
         byte[] rawImage;
@@ -159,45 +165,73 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
         } else {
             int height = bitmap.getHeight();
             int width = bitmap.getWidth();
-            final Bitmap bitmap1 = Bitmap.createBitmap(bitmap, width/2 - dip2px(150),height / 2 - dip2px(92), dip2px(300), dip2px(185));
+            final Bitmap bitmap1 = Bitmap.createBitmap(bitmap, width / 2 - dip2px(150), height / 2 - dip2px(92), dip2px(300), dip2px(185), matrix, true);
+
             int x, y, w, h;
             x = (int) (bitmap1.getWidth() * 0.340);
-            y = (int) (bitmap1.getHeight() * 0.800);
+            y = (int) (bitmap1.getHeight() * 0.850);//0.800
+
+            //todo 为了提高识别速度
+            if ((REQUEST_ID_FRONT + "").equals(requestCode)) {  //todo 身份证正面
+                y = (int) (bitmap1.getHeight() * 0.800);//0.800
+
+            } else if ((REQUEST_ID_BACK + "").equals(requestCode)) { //todo 身份证反面
+                y = (int) (bitmap1.getHeight() * 0.850);//0.800
+            }
+
             w = (int) (bitmap1.getWidth() * 0.6 + 0.5f);
             h = (int) (bitmap1.getHeight() * 0.12 + 0.5f);
-            Bitmap bit_hm = Bitmap.createBitmap(bitmap1, x, y, w, h);
-           // iv_result.setImageBitmap(bit_hm);
-            if(bit_hm != null){
+            Bitmap bit_hm = Bitmap.createBitmap(bitmap1, x, y, w, h, matrix, true);
+            // iv_result.setImageBitmap(bit_hm);
+            if (bit_hm != null) {
+
+
                 String localre = localre(bit_hm);
-                if((REQUEST_ID_FRONT+"").equals(requestCode)){
+                if ((REQUEST_ID_FRONT + "").equals(requestCode)) {
                     Matcher matcher = patternIDCardFront.matcher(localre);
                     boolean b = matcher.matches();
                     if (b) {
-                        Log.e(TAG, "onPreviewFrame: "+localre );
-//                        onPreviewFrame: 130130199101053056
-                        Toast.makeText(getApplicationContext(),localre,Toast.LENGTH_SHORT).show();
+                        FileUtils.saveImg2LocalWithName(bitmap, "bitmap_front1");
+                        FileUtils.saveImg2LocalWithName(bitmap1, "bitmap_front2");
+                        FileUtils.saveImg2LocalWithName(bit_hm, "bitmap_front3");
 
-                        intent.putExtra("data",localre);
-                        setResult(RESULT_OK,intent);
+                        String bitmap_front1_sm = ImageUtils.compressImage(FileUtils.getImageDirectoryPath() + "bitmap_front1.jpg", FileUtils.getImageDirectoryPath() + "bitmap_front1_sm.jpg", 80);
+                        String bitmap_front2_sm = ImageUtils.compressImage(FileUtils.getImageDirectoryPath() + "bitmap_front2.jpg", FileUtils.getImageDirectoryPath() + "bitmap_front2_sm.jpg", 80);
+
+                        Log.e(TAG, "onPreviewFrame: " + localre);
+//                        onPreviewFrame: 130130199101053056
+                        Toast.makeText(getApplicationContext(), localre, Toast.LENGTH_SHORT).show();
+
+                        intent.putExtra("data", localre);
+                        setResult(RESULT_OK, intent);
                         finish();
                     }
-                }else if((REQUEST_ID_BACK+"").equals(requestCode)){
-                    Log.e(TAG, "onPreviewFrame: "+localre );
+                } else if ((REQUEST_ID_BACK + "").equals(requestCode)) {
+
+                    FileUtils.saveImg2LocalWithName(bitmap, "bitmap_back1");
+                    FileUtils.saveImg2LocalWithName(bitmap1, "bitmap_back2");
+                    FileUtils.saveImg2LocalWithName(bit_hm, "bitmap_back3");
+
+                    String bitmap_back1_sm = ImageUtils.compressImage(FileUtils.getImageDirectoryPath() + "bitmap_back1.jpg", FileUtils.getImageDirectoryPath() + "bitmap_back1_sm.jpg", 80);
+                    String bitmap_back2_sm = ImageUtils.compressImage(FileUtils.getImageDirectoryPath() + "bitmap_back2.jpg", FileUtils.getImageDirectoryPath() + "bitmap_back2_sm.jpg", 80);
+
+
+                    Log.e(TAG, "onPreviewFrame: " + localre);
 //                    onPreviewFrame: 1 2015.02.16-2025.02.16
-                    Toast.makeText(getApplicationContext(),localre,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), localre, Toast.LENGTH_SHORT).show();
 
                     String d[] = localre.split(" ");
                     String ret = "";
-                    if(d.length>0){
-                        ret = d[d.length-1];
+                    if (d.length > 0) {
+                        ret = d[d.length - 1];
                     }
 
                     Matcher matcher = patternIDCardBack.matcher(ret);
                     boolean b = matcher.matches();
                     if (b) {
 
-                        intent.putExtra("data",ret);
-                        setResult(RESULT_OK,intent);
+                        intent.putExtra("data", ret);
+                        setResult(RESULT_OK, intent);
                         finish();
                     }
                 }
@@ -218,7 +252,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback ,
         //设置要识别的图片
         baseApi.setImage(bm);
         baseApi.setVariable("tessedit_char_whitelist", "0123456789Xx.-");
-        Log.e(TAG, "localre: "+ baseApi.getUTF8Text());
+        Log.e(TAG, "localre: " + baseApi.getUTF8Text());
         content = baseApi.getUTF8Text();
         baseApi.clear();
         baseApi.end();
