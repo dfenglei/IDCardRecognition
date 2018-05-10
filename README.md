@@ -4,7 +4,8 @@ react-native Android 身份证号码（正面）/有效期限（反面）识别 
 ### 本地识别基于tess_two，位置对的话识别准确率达到90%以上
 
 
-###Getting started
+### Getting started
+
 -
 package.json 添加
 
@@ -19,7 +20,7 @@ $ npm i
 $ react-native link react-native-android-auto-update
 ```
 
-####Android
+#### Android
 
 - Add below snippet in your app setting.gradle file
 
@@ -68,7 +69,9 @@ protected List<ReactPackage> getPackages() {
 
 - copy files in `tessdata` to `android/app/src/main/assets/tessdata`
 
-###Usage
+
+### Usage
+
 
 ```
 
