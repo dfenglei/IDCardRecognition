@@ -3,6 +3,8 @@ package com.testcamera;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.nick.idcard.AssestUtils;
+import com.nick.idcard.IDRecognitionPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -23,6 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new IDRecognitionPackage(),
           new RNCameraPackage()
       );
     }
@@ -42,5 +45,6 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    new AssestUtils(this).init();
   }
 }

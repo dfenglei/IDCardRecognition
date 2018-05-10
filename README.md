@@ -142,6 +142,18 @@ const styles = StyleSheet.create({
 ```
 
 
+###Example
+-
+Try the included [example/TestCamera](https://github.com/ribuluo000/IDCardRecognition/tree/master/example/TestCamera)
+
+- `cd example/TestCamera/`
+- `npm i`
+- `react-native run-android`
+
+```
+
+```
+
 
 
 

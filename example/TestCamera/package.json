@@ -9,6 +9,7 @@
   "dependencies": {
     "react": "16.3.1",
     "react-native": "0.55.3",
+    "react-native-IDRecognition": "git+https://github.com/ribuluo000/IDCardRecognition.git",
     "react-native-camera": "^1.1.2"
   },
   "devDependencies": {
