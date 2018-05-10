@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
 ```
 
 
-###Example
+### Example
+
 -
 Try the included [example/TestCamera](https://github.com/ribuluo000/IDCardRecognition/tree/master/example/TestCamera)
 
@@ -157,7 +158,7 @@ Try the included [example/TestCamera](https://github.com/ribuluo000/IDCardRecogn
 
 
 
-###参考链接
+### 参考链接
 
 [React Native 与 Android原生Activity互相跳转页面 https://www.2cto.com/kf/201710/694451.html](https://www.2cto.com/kf/201710/694451.html)
 
