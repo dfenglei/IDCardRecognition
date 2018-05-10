@@ -550,7 +550,7 @@ public class IDRecognitionModule extends ReactContextBaseJavaModule
 
     public @StyleRes
     int getDialogThemeId() {
-        return R.style.Theme_AppCompat_DayNight_Dialog;
+        return R.style.Theme_AppCompat_Dialog;
     }
 
     public @NonNull

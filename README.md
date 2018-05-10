@@ -8,7 +8,7 @@ react-native Android 身份证号码（正面）/有效期限（反面）识别 
 
 ```
 $ npm i ribuluo000/IDCardRecognition --save
-$ react-native link react-native-android-auto-update
+$ react-native link react-native-IDRecognition
 ```
 
 - 或者
@@ -23,7 +23,7 @@ package.json 添加
 
 ```
 $ npm i
-$ react-native link react-native-android-auto-update
+$ react-native link react-native-IDRecognition
 ```
 
 
