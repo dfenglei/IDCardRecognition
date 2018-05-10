@@ -339,16 +339,6 @@ public class IDRecognitionModule extends ReactContextBaseJavaModule
 
             }
             cameraIntent = new Intent(reactContext, CameraActivity.class);
-
-            final File original = createNewFile(reactContext, this.options, false);
-            imageConfig = imageConfig.withOriginalFile(original);
-
-            cameraCaptureURI = RealPathUtil.compatUriFromFile(reactContext, imageConfig.original);
-            if (cameraCaptureURI == null) {
-                responseHelper.invokeError(callback, "Couldn't get file path for photo");
-                return;
-            }
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraCaptureURI);
             cameraIntent.putExtra("requestCode", requestCode+"");
         }
 
