@@ -150,9 +150,6 @@ Try the included [example/TestCamera](https://github.com/ribuluo000/IDCardRecogn
 - `npm i`
 - `react-native run-android`
 
-```
-
-```
 
 
 
